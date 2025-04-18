@@ -1,21 +1,19 @@
 import getLinkByAlias from '../../lib/getLinkByAlias';
 import { redirect } from 'next/navigation';
 
-export default async function RedirectAliasPage({
-                                                    params,
-                                                }: {
-    params: { alias: string };
-}) {
-    console.log('alias param:', params.alias);
+export default async function RedirectAliasPage({params,}: { params: Promise<{ alias: string }>; }) {
 
-    const link = await getLinkByAlias(params.alias);
 
-    if (!link) {
-        console.log('No link found for alias:', params.alias);
-        return redirect('/');
+    const {alias}= await params;
+
+    const link = await getLinkByAlias(alias);
+
+    if (link) {
+
+        redirect(link.url);
     }
 
-    console.log('Redirecting to:', link.url);
-    redirect(link.url);
+
+    redirect('/');
 }
 
